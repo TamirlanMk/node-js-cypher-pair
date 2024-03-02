@@ -16,13 +16,14 @@ export default class Caesar {
         let encryptedText = '';
 
         text.split('').map(char => {
-            console.log(isAlphaNumeric(char))
             if (isAlphaNumeric(char)) {
                 let alphabet = this.alphabet[type][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
-                let encryptedCharIndex = (alphabet.split('').findIndex((c) => c === char) + +shift) % alphabet.length
+                let encryptedCharIndex = (alphabet.length + alphabet.indexOf(char) + shift) % alphabet.length
+
                 encryptedText += alphabet[encryptedCharIndex]
             }
         })
+
         return encryptedText;
     }
 
@@ -32,7 +33,7 @@ export default class Caesar {
         text.split('').map(char => {
             if (isAlphaNumeric(char)) {
                 let alphabet = this.alphabet[type][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
-                let encryptedCharIndex = (alphabet.split('').findIndex((c) => c === char) - +shift) % alphabet.length
+                let encryptedCharIndex = (alphabet.length + alphabet.indexOf(char) - shift) % alphabet.length
 
                 encryptedText += alphabet[encryptedCharIndex]
             }

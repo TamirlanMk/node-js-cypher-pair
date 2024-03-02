@@ -1,3 +1,5 @@
+import {Buffer} from "buffer/";
+
 export default class XOrCypher {
     encrypt(text, key) {
         let encryptedText = '';
@@ -6,6 +8,15 @@ export default class XOrCypher {
             encryptedText += String.fromCharCode(charCode);
         }
         return encryptedText;
+    }
+
+
+    encode (key, data) {
+        return Buffer.from(this.xorStrings(key, data),'utf8').toString('base64');
+    }
+    decode(key, data) {
+        data = Buffer.from(data,'base64').toString('utf8');
+        return this.xorStrings(key, data);
     }
 
     // Метод для дешифрования текста
@@ -17,4 +28,15 @@ export default class XOrCypher {
         }
         return decryptedText;
     }
+
+     xorStrings(key,input){
+        var output='';
+        for(var i=0;i<input.length;i++){
+            var c = input.charCodeAt(i);
+            var k = key.charCodeAt(i%key.length);
+            output += String.fromCharCode(c ^ k);
+        }
+        return output;
+    }
+
 }

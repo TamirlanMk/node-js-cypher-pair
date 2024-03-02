@@ -57,6 +57,9 @@ BTN.onclick = (e) => {
             } else if (parseInt(TYPE.value) === +DECODE_INDEX) {
                 RES_OUTPUT.value = xOrCypher.decrypt(TEXT_INPUT.value, KEY_INPUT.value)
             }
+
+            console.log(xOrCypher.encode(TEXT_INPUT.value, KEY_INPUT.value))
+            console.log(xOrCypher.decode(xOrCypher.encode(TEXT_INPUT.value, KEY_INPUT.value), KEY_INPUT.value))
             break;
         case PERMUTATION_SIMPLE_CYPHER_INDEX:
             const permutationSimple = new Permutation();
