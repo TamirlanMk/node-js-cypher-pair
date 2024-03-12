@@ -11,9 +11,8 @@ export default class Vizhiner {
     }
 
     encrypt(text, key, type = 'ru') {
-        text = text.toLowerCase();
-        let encryptedText = '';
         let alphabet = this.alphabet[type]['lowercase'];
+        let encryptedText = '';
 
         for (let char in text) {
             let charIndex = alphabet.split('').findIndex(c => c === text[char]);
@@ -26,9 +25,8 @@ export default class Vizhiner {
     }
 
     decrypt(text, key, type = 'ru') {
-        text = text.toLowerCase();
-        let encryptedText = '';
         let alphabet = this.alphabet[type]['lowercase'];
+        let encryptedText = '';
 
         for (let char in text) {
             let charIndex = alphabet.split('').findIndex(c => c === text[char]);
