@@ -27,6 +27,55 @@ export default class Permutation {
         return encryptedText
     }
 
+    encryptHard(plaintext, permutationKey) {
+        const length = permutationKey.length;
+        const numOfRows = Math.ceil(plaintext.length / length);
+        const matrix = [];
+
+        let index = 0;
+        for (let i = 0; i < numOfRows; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < length; j++) {
+                if (index < plaintext.length)
+                    matrix[i][j] = plaintext[index++];
+                else
+                    matrix[i][j] = ' ';
+            }
+        }
+
+        let ciphertext = "";
+        permutationKey.split('').forEach(column => {
+            for (let row = 0; row < numOfRows; row++) {
+                ciphertext += matrix[row][column - 1];
+            }
+        });
+
+        return ciphertext;
+    }
+
+    decryptHard(ciphertext, permutationKey) {
+        const length = permutationKey.length;
+        const numOfRows = ciphertext.length / length;
+        const matrix = [];
+
+        let index = 0;
+        permutationKey.split('').forEach(column => {
+            for (let row = 0; row < numOfRows; row++) {
+                if (!matrix[row]) matrix[row] = [];
+                matrix[row][column - 1] = ciphertext[index++];
+            }
+        });
+
+        let plaintext = "";
+        for (let i = 0; i < numOfRows; i++) {
+            for (let j = 0; j < length; j++) {
+                plaintext += matrix[i][j];
+            }
+        }
+
+        return plaintext.trim();
+    }
+
     makeMatrix(text, key) {
         let matrix = [];
         let currentLetter = 0;
