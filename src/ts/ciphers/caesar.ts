@@ -1,7 +1,13 @@
-import {isAlphaNumeric} from "./helpers.js";
+import {isAlphaNumeric} from "../helpers";
+
+type CaesarProps = {
+    text: string,
+    shift: number,
+    language?: string
+}
 
 export default class Caesar {
-    alphabet: {[key: string]: {uppercase: string; lowercase: string}} = {
+    alphabet: { [key: string]: { uppercase: string; lowercase: string } } = {
         'en': {
             'uppercase': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             'lowercase': 'abcdefghijklmnopqrstuvwxyz'
@@ -12,34 +18,36 @@ export default class Caesar {
         }
     }
 
-    encrypt(text, shift, type) {
+    encrypt({text, shift, language = 'ru'}: CaesarProps) {
         let encryptedText = '';
 
         text.split('').map(char => {
             if (isAlphaNumeric(char)) {
-                let alphabet = this.alphabet[type][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
+                let alphabet = this.alphabet[language][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
                 let encryptedCharIndex = (alphabet.length + alphabet.indexOf(char) + shift) % alphabet.length
 
                 encryptedText += alphabet[encryptedCharIndex]
+            } else {
+                encryptedText += char;
             }
         })
-
         return encryptedText;
     }
 
-    decrypt(text, shift, type) {
-        let encryptedText = '';
+    decrypt({text, shift, language = 'ru'}: CaesarProps) {
+        let decryptedText = '';
 
         text.split('').map(char => {
             if (isAlphaNumeric(char)) {
-                let alphabet = this.alphabet[type][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
+                let alphabet = this.alphabet[language][char.toUpperCase() === char ? 'uppercase' : 'lowercase']
                 let encryptedCharIndex = (alphabet.length + alphabet.indexOf(char) - shift) % alphabet.length
 
-                encryptedText += alphabet[encryptedCharIndex]
+                decryptedText += alphabet[encryptedCharIndex]
+            } else {
+                decryptedText += char;
             }
         })
-
-        return encryptedText;
+        return decryptedText;
     }
 }
 

@@ -11,7 +11,7 @@ const TYPE_RADIOBUTTONS = document.querySelectorAll('[name="type"]');
 
 const SHIFT_INPUT = document.querySelector('#shift');
 const KEY_INPUT = document.querySelector('#key');
-const VARIANT_RADIOBUTTONS = document.querySelectorAll('[name="variant"]');
+const LANGUAGE_RADIOBUTTONS = document.querySelectorAll('[name="language"]');
 
 const BTN_ENCRYPT = document.querySelector('#action-btn-encrypt');
 const BTN_DECRYPT = document.querySelector('#action-btn-decrypt');
@@ -26,7 +26,7 @@ console.log('App js connected...')
 
 BTN_ENCRYPT.onclick = (e) => {
     let TYPE = document.querySelector('[name="type"]:checked')
-    let VARIANT = document.querySelector('[name="variant"]:checked')
+    let VARIANT = document.querySelector('[name="language"]:checked')
 
     switch (parseInt(CYPHER.value)) {
         case CAESAR_CYPHER_INDEX:
@@ -59,7 +59,7 @@ BTN_ENCRYPT.onclick = (e) => {
 
 BTN_DECRYPT.onclick = (e) => {
     let TYPE = document.querySelector('[name="type"]:checked')
-    let VARIANT = document.querySelector('[name="variant"]:checked')
+    let VARIANT = document.querySelector('[name="language"]:checked')
 
     switch (parseInt(CYPHER.value)) {
         case CAESAR_CYPHER_INDEX:
@@ -96,32 +96,32 @@ CYPHER.onchange = (e) => {
         case CAESAR_CYPHER_INDEX:
             makeHiddenAddBlock(KEY_INPUT)
             makeVisibleAddBlock(SHIFT_INPUT)
-            makeVisibleAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeVisibleAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break;
         case VIZHINER_CYPHER_INDEX:
             makeHiddenAddBlock(SHIFT_INPUT)
             makeVisibleAddBlock(KEY_INPUT)
-            makeVisibleAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeVisibleAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break;
         case XOR_CYPHER_INDEX:
             makeVisibleAddBlock(KEY_INPUT)
             makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeHiddenAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break;
         case PERMUTATION_SIMPLE_CYPHER_INDEX:
             makeVisibleAddBlock(KEY_INPUT)
             makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeHiddenAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break;
         case PERMUTATION_CYPHER_INDEX:
             makeVisibleAddBlock(KEY_INPUT)
             makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeHiddenAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break;
         default:
             makeHiddenAddBlock(KEY_INPUT)
             makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTONS[0])
+            makeHiddenAddBlock(LANGUAGE_RADIOBUTTONS[0])
             break
     }
 }

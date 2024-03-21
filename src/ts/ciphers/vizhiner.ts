@@ -1,3 +1,11 @@
+import {isAlphaNumeric} from "../helpers";
+
+type VizhinerProps = {
+    text: string,
+    key: string,
+    language?: string
+}
+
 export default class Vizhiner {
     alphabet = {
         'en': {
@@ -10,30 +18,42 @@ export default class Vizhiner {
         }
     }
 
-    encrypt(text, key, type = 'ru') {
-        let alphabet = this.alphabet[type]['lowercase'];
+    encrypt({text, key, language}: VizhinerProps) {
+        const alphabet = this.alphabet[language]['lowercase'].split('');
+        const splittedText = text.toLowerCase().split('');
+        const splittedKey = key.toLowerCase().split('');
+
         let encryptedText = '';
+        splittedText.forEach((char, index) => {
+            if (isAlphaNumeric(char)) {
+                let charIndex = alphabet.indexOf(char);
+                let keyIndex = alphabet.indexOf(splittedKey[index % key.length]);
 
-        for (let char in text) {
-            let charIndex = alphabet.split('').findIndex(c => c === text[char]);
-            let keyIndex = alphabet.split('').findIndex(c => c === key[char % key.length]);
-
-            encryptedText += alphabet[(charIndex + keyIndex + 1) % alphabet.length];
-        }
+                encryptedText += alphabet[(charIndex + keyIndex + 1) % alphabet.length];
+            } else {
+                encryptedText += char;
+            }
+        })
 
         return encryptedText;
     }
 
-    decrypt(text, key, type = 'ru') {
-        let alphabet = this.alphabet[type]['lowercase'];
+    decrypt({text, key, language}: VizhinerProps) {
+        const alphabet = this.alphabet[language]['lowercase'].split('');
+        const splittedText = text.toLowerCase().split('');
+        const splittedKey = key.toLowerCase().split('');
+
         let encryptedText = '';
+        splittedText.forEach((char, index) => {
+            if (isAlphaNumeric(char)) {
+                let charIndex = alphabet.indexOf(char);
+                let keyIndex = alphabet.indexOf(splittedKey[index % key.length]);
 
-        for (let char in text) {
-            let charIndex = alphabet.split('').findIndex(c => c === text[char]);
-            let keyIndex = alphabet.split('').findIndex(c => c === key[char % key.length]);
-
-            encryptedText += alphabet[(alphabet.length + charIndex - keyIndex - 1) % alphabet.length];
-        }
+                encryptedText += alphabet[(alphabet.length + charIndex - keyIndex - 1) % alphabet.length];
+            } else {
+                encryptedText += char;
+            }
+        })
 
         return encryptedText;
     }

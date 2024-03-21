@@ -28,7 +28,7 @@
                                   class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                     </div>
                 </div>
-                <div class="sm:w-5/12 flex flex-col md:flex-row md:items-start justify-between gap-x-4 gap-y-2 mb-4">
+                <div class="flex flex-col md:flex-row md:items-start justify-start gap-x-6 gap-y-2 mb-4">
                     <div class="inline-block">
                         <label for="cypher" class="block text-sm font-medium leading-6 text-gray-900 pt-2">
                             Выберите&nbsp;шифр:
@@ -43,8 +43,6 @@
                             <option value="5">Шифр сложной перестановки</option>
                         </select>
                     </div>
-                </div>
-                <div class="sm:w-5/12 flex flex-col md:flex-row md:items-start justify-start gap-x-4 gap-y-2 mb-4">
                     <div class="hidden block-wrapper">
                         <label for="shift" class="block text-sm font-medium leading-6 text-gray-900 pt-2">Отступ&nbsp;для&nbsp;шифрования:</label>
                         <input type="number" min="1" max="20" value="1" name="shift" id="shift"
@@ -58,15 +56,13 @@
                     <div class="hidden block-wrapper">
                         <div class="inline-block">
                             <p class="block text-sm font-medium leading-6 text-gray-900 m-0 pt-2 p-0">
-                                Выберите&nbsp;язык для шифрования:
+                                Выберите&nbsp;язык:
                             </p>
                             <div class="inline-block mr-4">
                                 <div class="relative flex items-start">
-                                    <label for="ru_lang"
-                                           class="font-base text-sm text-gray-700 cursor-pointer">Русский</label>
+                                    <label for="ru_lang" class="font-base text-sm text-gray-700 cursor-pointer">Русский</label>
                                     <div class="ml-3 flex h-6 items-center">
-                                        <input id="ru_lang" value="ru" checked name="variant" type="radio"
-                                               class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
+                                        <input id="ru_lang" value="ru" checked name="language" type="radio" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
                                     </div>
                                 </div>
                             </div>
@@ -74,15 +70,14 @@
                                 <div class="relative flex items-start">
                                     <label for="en_lang" class="font-base text-sm text-gray-700 cursor-pointer">Английский</label>
                                     <div class="ml-3 flex h-6 items-center">
-                                        <input id="en_lang" value="en" name="variant" type="radio"
-                                               class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
+                                        <input id="en_lang" value="en" name="language" type="radio" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="mb-4">
                     <label for="result" class="block text-base font-medium leading-6 text-gray-900">
                         Результат шифрования:
                     </label>
@@ -92,13 +87,13 @@
                     </div>
                 </div>
             </div>
-            <div class="relative flex justify-end gap-x-4">
+            <div class="relative flex justify-between sm:justify-end gap-x-4">
                 <button id="action-btn-decrypt" type="button"
-                        class="rounded bg-indigo-500 px-8 py-3 text-[16px] font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                        Расшифровать
+                        class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                    Расшифровать
                 </button>
                 <button id="action-btn-encrypt" type="button"
-                        class="rounded bg-indigo-500 px-8 py-3 text-[16px] font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                        class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                     Зашифровать
                 </button>
             </div>
@@ -106,6 +101,6 @@
     </main>
 </div>
 <!--<script type="module" src="js/app.js"></script>-->
-<script type="module" src="js/app.js"></script>
+<script type="module" src="ts/app.ts"></script>
 </body>
 </html>

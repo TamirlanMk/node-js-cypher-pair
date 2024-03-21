@@ -2,138 +2,134 @@ import Caesar from "./ciphers/caesar";
 import Vizhiner from "./ciphers/vizhiner";
 import XOrCypher from "./ciphers/xor";
 import Permutation from "./ciphers/permutation";
+import {changeVisibleForBlockWrapper} from "./helpers";
 
-const CYPHER: HTMLInputElement = document.querySelector('#cypher');
-const TEXT_INPUT: HTMLInputElement = document.querySelector('#text');
-const RES_OUTPUT: HTMLInputElement = document.querySelector('#result');
+console.log('App connected...')
 
-const KEY_INPUT: HTMLInputElement = (<HTMLInputElement>document.querySelector('#key'));
-const SHIFT_INPUT: HTMLInputElement = (<HTMLInputElement>document.querySelector('#shift'));
-const VARIANT_RADIOBUTTON: NodeListOf<HTMLInputElement> = document.querySelectorAll('[name="variant"]');
+const textInput: HTMLInputElement = document.querySelector('#text');
+const resultInput: HTMLInputElement = document.querySelector('#result');
 
-const BTN: HTMLElement = document.querySelector('#action-btn');
+const cypherSelect: HTMLInputElement = document.querySelector('#cypher');
 
-const CAESAR_CYPHER_INDEX: number = 1,
-    VIZHINER_CYPHER_INDEX: number = 2,
-    XOR_CYPHER_INDEX: number = 3,
-    PERMUTATION_SIMPLE_CYPHER_INDEX: number = 4,
-    PERMUTATION_CYPHER_INDEX: number = 5;
+const keyInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#key'));
+const shiftInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#shift'));
 
-const ENCODE_INDEX: number = 0,
-    DECODE_INDEX: number = 1;
+const languageInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('[name="language"]'))
 
-console.log('App ts connected...')
+const encryptBtn: HTMLElement = document.querySelector('#action-btn-encrypt');
+const decryptBtn: HTMLElement = document.querySelector('#action-btn-decrypt');
 
-BTN.onclick = () => {
-    let type: number = +(document.querySelector('[name="type"]:checked') as HTMLInputElement).value
-    let language: string = (document.querySelector('[name="variant"]:checked') as HTMLInputElement).value
-    const key: string = KEY_INPUT.value;
-    const text: string = TEXT_INPUT.value;
-    const shift: number = +SHIFT_INPUT.value;
+enum Cyphers {
+    caesar = 1,
+    vizhiner = 2,
+    xOr = 3,
+    permutationSimple = 4,
+    permutation = 5,
+}
 
-    switch (parseInt(CYPHER.value)) {
-        case CAESAR_CYPHER_INDEX:
+encryptBtn.onclick = () => {
+    const key: string = keyInput.value;
+    const text: string = textInput.value;
+    const language: string = (<HTMLInputElement>document.querySelector('[name="language"]:checked')).value;
+
+    switch (parseInt(cypherSelect.value)) {
+        case Cyphers.caesar:
+            const shift: number = +shiftInput.value;
             const caesarCypher: Caesar = new Caesar();
 
-            if (isEncode(type)) {
-                RES_OUTPUT.value = caesarCypher.encrypt(text, shift, language)
-            } else {
-                RES_OUTPUT.value = caesarCypher.decrypt(text, shift, language)
-            }
+            resultInput.value = caesarCypher.encrypt({text, shift, language})
             break;
-        case VIZHINER_CYPHER_INDEX:
+        case Cyphers.vizhiner:
             const vizhinerCypher: Vizhiner = new Vizhiner();
 
-            if (isEncode(type)) {
-                RES_OUTPUT.value = vizhinerCypher.encrypt(text, key, language)
-            } else {
-                RES_OUTPUT.value = vizhinerCypher.decrypt(text, key, language)
-            }
+            resultInput.value = vizhinerCypher.encrypt({text, key, language})
             break;
-        case XOR_CYPHER_INDEX:
+        case Cyphers.xOr:
             const xOrCypher: XOrCypher = new XOrCypher();
 
-            if (isEncode(type)) {
-                RES_OUTPUT.value = xOrCypher.encrypt(text, key)
-            } else {
-                RES_OUTPUT.value = xOrCypher.decrypt(text, key)
-            }
-            console.log(key)
-            console.log(xOrCypher.encode(text, key))
-            console.log(xOrCypher.decode(xOrCypher.encode(text, key), key))
+            resultInput.value = xOrCypher.encrypt({text, key})
             break;
-        case PERMUTATION_SIMPLE_CYPHER_INDEX:
+        case Cyphers.permutationSimple:
             const permutationSimple: Permutation = new Permutation();
 
-            if (isEncode(type)) {
-                RES_OUTPUT.value = permutationSimple.encryptSimple(text, key)
-            } else {
-                RES_OUTPUT.value = permutationSimple.encryptSimple(text, key)
-            }
+            resultInput.value = permutationSimple.encryptSimple({text, key})
             break;
-        case PERMUTATION_CYPHER_INDEX:
+        case Cyphers.permutation:
             const permutation: Permutation = new Permutation();
 
-            if (isEncode(type)) {
-                RES_OUTPUT.value = permutation.encrypt(text, key)
-            } else {
-                RES_OUTPUT.value = permutation.encrypt(text, key)
-            }
+            resultInput.value = permutation.encryptHard({text, key})
             break;
     }
 }
 
-CYPHER.onchange = (e) => {
-    let value: number = parseInt((e.target as HTMLInputElement).value);
+decryptBtn.onclick = () => {
+    const key: string = keyInput.value;
+    const text: string = textInput.value;
+    const language: string = (<HTMLInputElement>document.querySelector('[name="language"]:checked')).value;
 
-    switch (value) {
-        case CAESAR_CYPHER_INDEX:
-            makeHiddenAddBlock(KEY_INPUT)
-            makeVisibleAddBlock(SHIFT_INPUT)
-            makeVisibleAddBlock(VARIANT_RADIOBUTTON[0])
+    switch (parseInt(cypherSelect.value)) {
+        case Cyphers.caesar:
+            const shift: number = +shiftInput.value;
+            const caesarCypher: Caesar = new Caesar();
+
+            resultInput.value = caesarCypher.decrypt({text, shift, language})
             break;
-        case VIZHINER_CYPHER_INDEX:
-            makeHiddenAddBlock(SHIFT_INPUT)
-            makeVisibleAddBlock(KEY_INPUT)
-            makeVisibleAddBlock(VARIANT_RADIOBUTTON[0])
+        case Cyphers.vizhiner:
+            const vizhinerCypher: Vizhiner = new Vizhiner();
+
+            resultInput.value = vizhinerCypher.decrypt({text, key, language})
             break;
-        case XOR_CYPHER_INDEX:
-            makeVisibleAddBlock(KEY_INPUT)
-            makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTON[0])
+        case Cyphers.xOr:
+            const xOrCypher: XOrCypher = new XOrCypher();
+
+            resultInput.value = xOrCypher.decrypt({text, key})
             break;
-        case PERMUTATION_SIMPLE_CYPHER_INDEX:
-            makeVisibleAddBlock(KEY_INPUT)
-            makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTON[0])
+        case Cyphers.permutationSimple:
+            const permutationSimple: Permutation = new Permutation();
+
+            resultInput.value = permutationSimple.encryptSimple({text, key})
             break;
-        case PERMUTATION_CYPHER_INDEX:
-            makeVisibleAddBlock(KEY_INPUT)
-            makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTON[0])
+        case Cyphers.permutation:
+            const permutation: Permutation = new Permutation();
+
+            resultInput.value = permutation.decryptHard({text, key})
+            break;
+    }
+}
+
+cypherSelect.onchange = (e) => {
+    let cypher: Cyphers = parseInt((e.target as HTMLInputElement).value);
+
+    switch (cypher) {
+        case Cyphers.caesar:
+            changeVisibleForBlockWrapper({el: keyInput, hide: true})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: false})
+            changeVisibleForBlockWrapper({el: languageInput, hide: false})
+            break;
+        case Cyphers.vizhiner:
+            changeVisibleForBlockWrapper({el: keyInput, hide: false})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: false})
+            break;
+        case Cyphers.xOr:
+            changeVisibleForBlockWrapper({el: keyInput, hide: false})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: true})
+            break;
+        case Cyphers.permutationSimple:
+            changeVisibleForBlockWrapper({el: keyInput, hide: false})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: true})
+            break;
+        case Cyphers.permutation:
+            changeVisibleForBlockWrapper({el: keyInput, hide: false})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: true})
             break;
         default:
-            makeHiddenAddBlock(KEY_INPUT)
-            makeHiddenAddBlock(SHIFT_INPUT)
-            makeHiddenAddBlock(VARIANT_RADIOBUTTON[0])
+            changeVisibleForBlockWrapper({el: keyInput, hide: true})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: true})
             break
     }
-}
-
-function isEncode(typeIndex: number): boolean {
-    if (typeIndex === ENCODE_INDEX) {
-        return true;
-    } else if (typeIndex === DECODE_INDEX) {
-        return false;
-    }
-}
-
-function makeVisibleAddBlock(el: HTMLElement | Element): void {
-    el.closest('.block-wrapper').classList.add('inline-block')
-    el.closest('.block-wrapper').classList.remove('hidden')
-}
-
-function makeHiddenAddBlock(el: HTMLElement | Element): void {
-    el.closest('.block-wrapper').classList.add('hidden')
-    el.closest('.block-wrapper').classList.remove('inline-block')
 }

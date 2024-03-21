@@ -1,34 +1,73 @@
+type PermutationParams = {
+    text: string,
+    key: string,
+}
+
 export default class Permutation {
+    encryptSimple({text, key}: PermutationParams) {
+        const matrix = this.makeMatrix(text, key);
 
-    encryptSimple(text: string, key: string) {
-        let matrix = this.#makeMatrix(text, key);
         let encryptedText = '';
-
-        for (let col of matrix) {
-            for (let index in col) {
+        matrix.map(col => {
+            col.map((char: string, index: number) => {
                 encryptedText += col[+key[index] - 1]
-            }
-        }
-
-        return encryptedText
-    }
-
-    encrypt(text: string, key: string) {
-        let matrix = this.#makeMatrix(text, key)
-        let encryptedText = '';
-        let encryptedMatrix = this.columnStack(matrix);
-
-        encryptedMatrix.map(col => {
-            col.map(char => {
-                encryptedText += char
             })
         })
 
         return encryptedText
     }
 
-    // @ts-ignore
-    #makeMatrix(text: string, key: string) {
+    encryptHard({text, key}: PermutationParams) {
+        const length = key.length;
+        const numOfRows = Math.ceil(text.length / length);
+        const matrix = [];
+
+        let index = 0;
+        for (let i = 0; i < numOfRows; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < length; j++) {
+                if (index < text.length)
+                    matrix[i][j] = text[index++];
+                else
+                    matrix[i][j] = ' ';
+            }
+        }
+
+        let ciphertext = "";
+        key.split('').forEach((column) => {
+            for (let row = 0; row < numOfRows; row++) {
+                console.log(column);
+                ciphertext += matrix[row][+column - 1];
+            }
+        });
+
+        return ciphertext;
+    }
+
+    decryptHard({text, key}: PermutationParams) {
+        const length = key.length;
+        const numOfRows = text.length / length;
+        const matrix = [];
+
+        let index = 0;
+        key.split('').forEach((column) => {
+            for (let row = 0; row < numOfRows; row++) {
+                if (!matrix[row]) matrix[row] = [];
+                matrix[row][+column - 1] = text[index++];
+            }
+        });
+
+        let plaintext = "";
+        for (let i = 0; i < numOfRows; i++) {
+            for (let j = 0; j < length; j++) {
+                plaintext += matrix[i][j];
+            }
+        }
+
+        return plaintext.trim();
+    }
+
+    private makeMatrix(text: string, key: string) {
         let matrix = [];
         let currentLetter = 0;
 
@@ -43,34 +82,4 @@ export default class Permutation {
         }
         return matrix
     }
-
-    columnStack(matrix) {
-        // Проверяем, является ли входной массив массивом
-        if (!Array.isArray(matrix)) {
-            throw new Error('Input must be an array of arrays');
-        }
-
-        // Проверяем, все ли элементы массива являются массивами
-        const allArrays = matrix.every(arr => Array.isArray(arr));
-        if (!allArrays) {
-            throw new Error('All elements must be arrays');
-        }
-
-        // Проверяем, все ли массивы имеют одинаковую длину
-        const lengths = matrix.map(arr => arr.length);
-        const sameLength = lengths.every((val, i, arr) => val === arr[0]);
-        if (!sameLength) {
-            throw new Error('All arrays must have the same length');
-        }
-
-        // Создаем новый массив, объединяя элементы из оригинальных массивов по столбцам
-        const result = [];
-        for (let i = 0; i < matrix[0].length; i++) {
-            const newRow = matrix.map(arr => arr[i]);
-            result.push(newRow);
-        }
-
-        return result;
-    }
-
 }
