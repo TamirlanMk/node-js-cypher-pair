@@ -3,21 +3,18 @@ import Vizhiner from "./ciphers/vizhiner";
 import XOrCypher from "./ciphers/xor";
 import Permutation from "./ciphers/permutation";
 import {changeVisibleForBlockWrapper} from "./helpers";
+import Hash from "./hash/hash";
 
 console.log('App connected...')
+const textInput: HTMLInputElement = document.querySelector('#text'),
+    resultInput: HTMLInputElement = document.querySelector('#result'),
+    cypherSelect: HTMLInputElement = document.querySelector('#cypher'),
+    keyInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#key')),
+    shiftInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#shift')),
+    languageInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('[name="language"]')),
+    encryptBtn: HTMLElement = document.querySelector('#action-btn-encrypt'),
+    decryptBtn: HTMLElement = document.querySelector('#action-btn-decrypt');
 
-const textInput: HTMLInputElement = document.querySelector('#text');
-const resultInput: HTMLInputElement = document.querySelector('#result');
-
-const cypherSelect: HTMLInputElement = document.querySelector('#cypher');
-
-const keyInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#key'));
-const shiftInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#shift'));
-
-const languageInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('[name="language"]'))
-
-const encryptBtn: HTMLElement = document.querySelector('#action-btn-encrypt');
-const decryptBtn: HTMLElement = document.querySelector('#action-btn-decrypt');
 
 enum Cyphers {
     caesar = 1,
@@ -25,9 +22,10 @@ enum Cyphers {
     xOr = 3,
     permutationSimple = 4,
     permutation = 5,
+    hash = 6,
 }
 
-encryptBtn.onclick = () => {
+encryptBtn.onclick = async () => {
     const key: string = keyInput.value;
     const text: string = textInput.value;
     const language: string = (<HTMLInputElement>document.querySelector('[name="language"]:checked')).value;
@@ -58,6 +56,11 @@ encryptBtn.onclick = () => {
             const permutation: Permutation = new Permutation();
 
             resultInput.value = permutation.encryptHard({text, key})
+            break;
+        case Cyphers.hash:
+            const hash: Hash = new Hash();
+
+            resultInput.value = await hash.encrypt({text, key})
             break;
     }
 }
@@ -122,6 +125,11 @@ cypherSelect.onchange = (e) => {
             changeVisibleForBlockWrapper({el: languageInput, hide: true})
             break;
         case Cyphers.permutation:
+            changeVisibleForBlockWrapper({el: keyInput, hide: false})
+            changeVisibleForBlockWrapper({el: shiftInput, hide: true})
+            changeVisibleForBlockWrapper({el: languageInput, hide: true})
+            break;
+        case Cyphers.hash:
             changeVisibleForBlockWrapper({el: keyInput, hide: false})
             changeVisibleForBlockWrapper({el: shiftInput, hide: true})
             changeVisibleForBlockWrapper({el: languageInput, hide: true})
