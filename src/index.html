@@ -6,6 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css/main.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Шифры</title>
 </head>
 <body>
@@ -18,85 +19,157 @@
         </div>
     </header>
     <main class="main">
-        <div class="container">
-            <div class="pt-10 pb-6">
-                <div class="mb-4">
-                    <label for="text" class="block text-base font-medium leading-6 text-gray-900">Текст для
-                        шифрования:</label>
-                    <div class="mt-2">
-                        <textarea rows="4" name="text" id="text"
-                                  class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+        <div class="container" x-data="{currentTab: 'ciphers'}">
+
+            <div class="tabs">
+                <div class="hidden sm:block">
+                    <div class="isolate flex divide-x divide-gray-200 rounded-lg shadow" aria-label="Tabs">
+                        <!-- Current: "text-gray-900", Default: "text-gray-500 hover:text-gray-700" -->
+                        <button x-on:click="currentTab = 'ciphers'"
+                                :class="currentTab === 'ciphers' ? 'text-gray-900' : 'text-gray-500'"
+                                class="text-gray-900 rounded-l-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10"
+                                aria-current="page">
+                            <span>Шифры</span>
+                            <span aria-hidden="true" class="bg-indigo-500 absolute inset-x-0 bottom-0 h-0.5"></span>
+                        </button>
+                        <button x-on:click="currentTab = 'steganography'"
+                                :class="currentTab === 'steganography' ? 'text-gray-900' : 'text-gray-500'"
+                                class="text-gray-500 hover:text-gray-700 group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10">
+                            <span>Стенография</span>
+                            <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
+                        </button>
                     </div>
                 </div>
-                <div class="flex flex-col md:flex-row md:items-start justify-start gap-x-6 gap-y-2 mb-4">
-                    <div class="inline-block">
-                        <label for="cypher" class="block text-sm font-medium leading-6 text-gray-900 pt-2">
-                            Выберите&nbsp;шифр:
-                        </label>
-                        <select id="cypher" name="cypher"
-                                class="px-2 mt-2 block w-full min-w-[120px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                            <option>--выберите шифр--</option>
-                            <option value="1">Шифр Цезаря</option>
-                            <option value="2">Шифр Вижинера</option>
-                            <option value="3">Шифр XOR</option>
-                            <option value="4">Шифр простой перестановки</option>
-                            <option value="5">Шифр сложной перестановки</option>
-                            <option value="6">RSA-256</option>
-                        </select>
-                    </div>
-                    <div class="hidden block-wrapper">
-                        <label for="shift" class="block text-sm font-medium leading-6 text-gray-900 pt-2">Отступ&nbsp;для&nbsp;шифрования:</label>
-                        <input type="number" min="1" max="20" value="1" name="shift" id="shift"
-                               class="mt-2 block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                    <div class="hidden block-wrapper">
-                        <label for="key" class="block text-sm font-medium leading-6 text-gray-900 pt-2">Ключ&nbsp;для&nbsp;шифрования:</label>
-                        <input type="text" name="key" id="key"
-                               class="mt-2 px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                    <div class="hidden block-wrapper">
-                        <div class="inline-block">
-                            <p class="block text-sm font-medium leading-6 text-gray-900 m-0 pt-2 p-0">
-                                Выберите&nbsp;язык:
-                            </p>
-                            <div class="inline-block mr-4">
-                                <div class="relative flex items-start">
-                                    <label for="ru_lang" class="font-base text-sm text-gray-700 cursor-pointer">Русский</label>
-                                    <div class="ml-3 flex h-6 items-center">
-                                        <input id="ru_lang" value="ru" checked name="language" type="radio" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
+                <div class="tab-contents">
+                    <div x-show="currentTab === 'ciphers'">
+                        <div class="pt-10 pb-6">
+                            <div class="mb-4">
+                                <label for="text" class="block text-base font-medium leading-6 text-gray-900">Текст для
+                                    шифрования:</label>
+                                <div class="mt-2">
+                        <textarea rows="4" name="text" id="text"
+                                  class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                </div>
+                            </div>
+                            <div class="flex flex-col md:flex-row md:items-start justify-start gap-x-6 gap-y-2 mb-4">
+                                <div class="inline-block">
+                                    <label for="cypher" class="block text-sm font-medium leading-6 text-gray-900 pt-2">
+                                        Выберите&nbsp;шифр:
+                                    </label>
+                                    <select id="cypher" name="cypher"
+                                            class="px-2 mt-2 block w-full min-w-[120px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                        <option>--выберите шифр--</option>
+                                        <option value="1">Шифр Цезаря</option>
+                                        <option value="2">Шифр Вижинера</option>
+                                        <option value="3">Шифр XOR</option>
+                                        <option value="4">Шифр простой перестановки</option>
+                                        <option value="5">Шифр сложной перестановки</option>
+                                        <option value="6">RSA-256</option>
+                                    </select>
+                                </div>
+                                <div class="hidden block-wrapper">
+                                    <label for="shift" class="block text-sm font-medium leading-6 text-gray-900 pt-2">Отступ&nbsp;для&nbsp;шифрования:</label>
+                                    <input type="number" min="1" max="20" value="1" name="shift" id="shift"
+                                           class="mt-2 block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                                <div class="hidden block-wrapper">
+                                    <label for="key" class="block text-sm font-medium leading-6 text-gray-900 pt-2">Ключ&nbsp;для&nbsp;шифрования:</label>
+                                    <input type="text" name="key" id="key"
+                                           class="mt-2 px-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                                <div class="hidden block-wrapper">
+                                    <div class="inline-block">
+                                        <p class="block text-sm font-medium leading-6 text-gray-900 m-0 pt-2 p-0">
+                                            Выберите&nbsp;язык:
+                                        </p>
+                                        <div class="inline-block mr-4">
+                                            <div class="relative flex items-start">
+                                                <label for="ru_lang"
+                                                       class="font-base text-sm text-gray-700 cursor-pointer">Русский</label>
+                                                <div class="ml-3 flex h-6 items-center">
+                                                    <input id="ru_lang" value="ru" checked name="language" type="radio"
+                                                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="inline-block mr-4">
+                                            <div class="relative flex items-start">
+                                                <label for="en_lang"
+                                                       class="font-base text-sm text-gray-700 cursor-pointer">Английский</label>
+                                                <div class="ml-3 flex h-6 items-center">
+                                                    <input id="en_lang" value="en" name="language" type="radio"
+                                                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="inline-block mr-4">
-                                <div class="relative flex items-start">
-                                    <label for="en_lang" class="font-base text-sm text-gray-700 cursor-pointer">Английский</label>
-                                    <div class="ml-3 flex h-6 items-center">
-                                        <input id="en_lang" value="en" name="language" type="radio" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer">
-                                    </div>
+                            <div class="mb-4">
+                                <label for="result" class="block text-base font-medium leading-6 text-gray-900">
+                                    Результат шифрования:
+                                </label>
+                                <div class="mt-2">
+                        <textarea readonly rows="4" name="result" id="result"
+                                  class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                 </div>
                             </div>
                         </div>
+                        <div class="relative flex justify-between sm:justify-end gap-x-4">
+                            <button id="action-btn-decrypt" type="button"
+                                    class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                                Расшифровать
+                            </button>
+                            <button id="action-btn-encrypt" type="button"
+                                    class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                                Зашифровать
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="mb-4">
-                    <label for="result" class="block text-base font-medium leading-6 text-gray-900">
-                        Результат шифрования:
-                    </label>
-                    <div class="mt-2">
-                        <textarea readonly rows="4" name="result" id="result"
+                    <div x-show="currentTab === 'steganography'">
+                        <div class="pt-10 pb-6">
+                            <div class="mb-4">
+                                <label for="text" class="block text-base font-medium leading-6 text-gray-900">
+                                    Текст для шифрования:
+                                </label>
+                                <div class="mt-2">
+                                <textarea rows="4" name="text" id="text-steg"
                                   class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="text" class="block text-base font-medium leading-6 text-gray-900">
+                                    Изображение в которое будет встроено сообщение :
+                                </label>
+                                <div class="mt-2">
+                                    <input accept="image/*" id="image" type="file"
+                                           class="block w-full rounded-md border-0 p-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                                <div class="mt-2 flex">
+                                    <div class="w-full sm:w-6/12">
+                                        <h6>Входное изображение:</h6>
+                                        <img width="400px" id="input-img" src="" alt="">
+                                    </div>
+                                    <div class="w-full sm:w-6/12">
+                                        <h6>Выходное изображение:</h6>
+                                        <img width="400px" id="output-img" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="relative flex justify-between sm:justify-end gap-x-4">
+                            <button id="action-btn-decrypt-img" type="button"
+                                    class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                                Расшифровать
+                            </button>
+                            <button id="action-btn-encrypt-img" type="button"
+                                    class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                                Зашифровать
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="relative flex justify-between sm:justify-end gap-x-4">
-                <button id="action-btn-decrypt" type="button"
-                        class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                    Расшифровать
-                </button>
-                <button id="action-btn-encrypt" type="button"
-                        class="rounded w-1/2 sm:w-auto bg-indigo-500 px-5 sm:px-8 py-3 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                    Зашифровать
-                </button>
             </div>
         </div>
     </main>

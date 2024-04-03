@@ -4,6 +4,7 @@ import XOrCypher from "./ciphers/xor";
 import Permutation from "./ciphers/permutation";
 import {changeVisibleForBlockWrapper} from "./helpers";
 import Hash from "./hash/hash";
+import Steganography from "./steganography/steganography";
 
 console.log('App connected...')
 const textInput: HTMLInputElement = document.querySelector('#text'),
@@ -13,7 +14,9 @@ const textInput: HTMLInputElement = document.querySelector('#text'),
     shiftInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('#shift')),
     languageInput: HTMLInputElement = (<HTMLInputElement>document.querySelector('[name="language"]')),
     encryptBtn: HTMLElement = document.querySelector('#action-btn-encrypt'),
-    decryptBtn: HTMLElement = document.querySelector('#action-btn-decrypt');
+    encryptImgBtn: HTMLElement = document.querySelector('#action-btn-encrypt-img'),
+    decryptBtn: HTMLElement = document.querySelector('#action-btn-decrypt'),
+    decryptImgBtn: HTMLElement = document.querySelector('#action-btn-decrypt-img');
 
 
 enum Cyphers {
@@ -140,4 +143,47 @@ cypherSelect.onchange = (e) => {
             changeVisibleForBlockWrapper({el: languageInput, hide: true})
             break
     }
+}
+
+const imageInput: HTMLInputElement = (<HTMLInputElement>document.getElementById('image'));
+const imageOutput: HTMLImageElement = (<HTMLImageElement>document.getElementById('output-img'));
+const selectedImage: HTMLImageElement = (<HTMLImageElement>document.getElementById('input-img'));
+
+interface HTMLInputEvent extends Event {
+    target: HTMLInputElement & EventTarget;
+}
+
+imageInput.addEventListener('change', function (event: HTMLInputEvent) {
+    let reader = new FileReader();
+
+    reader.onload = e => {
+        selectedImage.setAttribute('src', e.target.result);
+    }
+
+    reader.readAsDataURL(event.target.files[0]);
+});
+
+
+encryptImgBtn.onclick = () => {
+    let steg = new Steganography();
+    steg.hideMessage(selectedImage.getAttribute('src'), (document.getElementById('text-steg') as HTMLInputElement).value)
+        .then(data => {
+            if(data) {
+                imageOutput.src = data
+            } else {
+                console.log('Произошла ошибка')
+            }
+        });
+}
+
+decryptImgBtn.onclick = () => {
+    let steg = new Steganography();
+    steg.extractMessage(selectedImage.getAttribute('src'))
+        .then(data => {
+            if(data) {
+                (document.getElementById('text-steg') as HTMLInputElement).value = data
+            } else {
+                console.log('Произошла ошибка')
+            }
+        });
 }
